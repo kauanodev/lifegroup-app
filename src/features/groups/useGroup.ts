@@ -8,7 +8,7 @@ export function useGroup(slug: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('groups')
-        .select('*, group_sections(*), addresses(*)')
+        .select('*, group_sections(*), addresses(*), sectors(churches(*))')
         .eq('slug', slug!)
         .maybeSingle()
 
