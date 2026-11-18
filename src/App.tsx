@@ -1,7 +1,11 @@
+import { Routes, Route } from 'react-router-dom'
+import GroupPage from './pages/GroupPage.tsx'
+
 export default function App() {
   return (
-    <h1 className="text-3xl font-bold text-red-600 p-6">
-      Lifegroup funcionando!
-    </h1>
+    <Routes>
+      <Route path="/g/:slug" element={<GroupPage />} />
+      <Route path="*" element={<p className="p-6">Página não encontrada.</p>} />
+    </Routes>
   )
 }
