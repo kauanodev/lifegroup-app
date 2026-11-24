@@ -33,4 +33,20 @@ export function useToggleMemberActive(groupId: string | undefined) {
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['members', groupId] }),
   })
+  
+}
+
+export function useUpdateMember(groupId: string | undefined) {
+  const qc = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ id, ...changes }: { id: string } & Partial<NewMember>) => {
+      const { error } = await supabase.from('members').update(changes).eq('id', id)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['members', groupId] })
+      qc.invalidateQueries({ queryKey: ['directory', groupId] })
+    },
+  })
 }

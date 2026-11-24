@@ -23,3 +23,9 @@ export function formatDateBR(isoOrDate: string | Date) {
   const d = typeof isoOrDate === 'string' ? new Date(`${isoOrDate}T00:00:00`) : isoOrDate
   return d.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })
 }
+
+export function addDaysISO(iso: string, days: number) {
+  const d = new Date(`${iso}T00:00:00`)
+  d.setDate(d.getDate() + days)
+  return toISODate(d)
+}
