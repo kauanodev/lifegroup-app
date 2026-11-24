@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../features/auth/useAuth'
+import PasswordInput from '../components/PasswordInput'
 
 export default function LoginPage() {
   const { session } = useAuth()
@@ -12,13 +13,17 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
-
+const [confirmPassword, setConfirmPassword] = useState('')
   if (session) return <Navigate to="/dashboard" replace />
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
     setMessage(null)
+    if (mode === 'signup' && password !== confirmPassword) {
+  setError('As senhas não conferem.')
+  return
+}
     setSubmitting(true)
 
     if (mode === 'login') {
@@ -51,15 +56,21 @@ export default function LoginPage() {
           onChange={(e) => setEmail(e.target.value)}
           className="w-full rounded-lg border p-2"
         />
-        <input
-          type="password"
-          required
-          minLength={6}
-          placeholder="Senha (mínimo 6 caracteres)"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border p-2"
-        />
+       <PasswordInput
+  value={password}
+  onChange={setPassword}
+  placeholder="Senha (mínimo 6 caracteres)"
+  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+/>
+
+{mode === 'signup' && (
+  <PasswordInput
+    value={confirmPassword}
+    onChange={setConfirmPassword}
+    placeholder="Confirme a senha"
+    autoComplete="new-password"
+  />
+)}
         {error && <p className="text-sm text-red-600">{error}</p>}
         {message && <p className="text-sm text-green-700">{message}</p>}
         <button
@@ -71,8 +82,12 @@ export default function LoginPage() {
       </form>
 
       <button
-        onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
-        className="mt-4 text-sm text-gray-600 underline"
+       onClick={() => {
+  setMode(mode === 'login' ? 'signup' : 'login')
+  setConfirmPassword('')
+  setError(null)
+  setMessage(null)
+}}
       >
         {mode === 'login' ? 'Primeiro acesso? Criar conta' : 'Já tenho conta'}
       </button>
