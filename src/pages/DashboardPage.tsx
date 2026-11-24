@@ -11,24 +11,30 @@ export default function DashboardPage() {
     <main className="mx-auto max-w-2xl p-6">
       <h1 className="text-2xl font-bold">Painel</h1>
 
-      {member ? (
-        <div className="mt-4">
-          <p>
-            Olá, <strong>{member.name}</strong>! Você é{' '}
-            {member.role === 'leader' ? 'líder' : 'membro'} do life{' '}
-            <strong>{member.groups?.name}</strong>.
-          </p>
-          {member.groups?.slug && (
-            <Link to={`/g/${member.groups.slug}`} className="mt-3 inline-block text-blue-600 underline">
-              Ver página do life
-            </Link>
-          )}
-        </div>
-      ) : (
-        <p className="mt-4 text-amber-800">
-          Seu e-mail ainda não foi cadastrado em nenhum life. Peça ao seu líder para te cadastrar.
-        </p>
-      )}
+     {member ? (
+  <div className="mt-4">
+    <p>
+      Olá, <strong>{member.nickname ?? member.name}</strong>! Você é{' '}
+      {member.role === 'leader' ? 'líder' : 'membro'} do life{' '}
+      <strong>{member.groups?.name}</strong>.
+    </p>
+    {member.groups?.slug && (
+      <Link to={`/g/${member.groups.slug}`} className="mt-3 inline-block text-blue-600 underline">
+        Ver página do life
+      </Link>
+    )}
+
+    {member.role === 'leader' && (
+      <Link to="/membros" className="mt-3 block text-blue-600 underline">
+        Gerenciar membros
+      </Link>
+    )}
+  </div>
+) : (
+  <p className="mt-4 text-amber-800">
+    Seu e-mail ainda não foi cadastrado em nenhum life. Peça ao seu líder para te cadastrar.
+  </p>
+)}
 
       <button
         onClick={() => supabase.auth.signOut()}
